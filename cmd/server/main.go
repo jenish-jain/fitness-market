@@ -1,11 +1,10 @@
 package main
 
 import (
-	"fitness-market/internal/auth"
 	"fitness-market/internal/database"
 	"fitness-market/internal/middleware"
 	"log"
-	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -13,35 +12,37 @@ import (
 
 func main() {
 	// Load environment variables
-	err := godotenv.Load()
-	if err != nil {
+	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found")
 	}
 
 	// Initialize database
-	database.InitDatabase()
+	database.Init()
 
-	// Initialize Supabase
-	auth.InitSupabase()
-
-	// Setup router
+	// Setup Gin router
 	r := gin.Default()
 
 	// Public routes
 	r.GET("/health", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{"status": "healthy"})
+		c.JSON(200, gin.H{"status": "ok"})
 	})
 
 	// Protected routes
-	protected := r.Group("/api")
-	protected.Use(middleware.AuthMiddleware())
+	api := r.Group("/api/v1")
+	api.Use(middleware.AuthMiddleware())
 	{
-		protected.GET("/profile", func(c *gin.Context) {
+		api.GET("/profile", func(c *gin.Context) {
 			user, _ := c.Get("user")
-			c.JSON(http.StatusOK, gin.H{"user": user})
+			c.JSON(200, gin.H{"user": user})
 		})
 	}
 
-	log.Println("Server starting on :8080")
-	r.Run(":8080")
+	// Start server
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Printf("Server starting on port %s", port)
+	log.Fatal(r.Run(":" + port))
 }
