@@ -32,9 +32,3 @@ export default function RootLayout({
     </html>
   )
 }
-
-// Move metadata to a separate metadata.ts file if needed
-export const metadata: Metadata = {
-  title: 'Fitness Market',
-  description: 'Fitness marketplace application',
-}
