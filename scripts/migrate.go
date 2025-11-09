@@ -2,8 +2,8 @@ package main
 
 import (
 	"fitness-market/internal/database"
-	"fitness-market/internal/models"
 	"log"
+	"os"
 
 	"github.com/joho/godotenv"
 )
@@ -14,15 +14,13 @@ func main() {
 		log.Println("No .env file found")
 	}
 
-	// Initialize database
+	log.Println("Running database migrations...")
+
+	// Initialize database connection and run migrations
 	database.Init()
 
-	// Run migrations
-	db := database.GetDB()
-	err := db.AutoMigrate(&models.User{})
-	if err != nil {
-		log.Fatal("Migration failed:", err)
-	}
+	log.Println("Migration completed successfully!")
 
-	log.Println("Migration completed successfully")
+	// Close database connection
+	database.Close()
 }
