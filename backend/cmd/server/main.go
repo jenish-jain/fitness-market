@@ -1,16 +1,41 @@
 package main
 
 import (
-	"fitness-market/internal/auth"
-	"fitness-market/internal/database"
-	"fitness-market/internal/middleware"
-	"fitness-market/internal/models"
 	"log"
-	"net/http"
+	"os"
+
+	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	log.Println("Starting fitness-market server...")
-	// Server implementation will go here
-	http.ListenAndServe(":8080", nil)
+	// Load environment variables
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found")
+	}
+
+	// Setup Gin router
+	r := gin.Default()
+
+	// Health check endpoint
+	r.GET("/health", func(c *gin.Context) {
+		c.JSON(200, gin.H{"status": "ok"})
+	})
+
+	// API routes
+	api := r.Group("/api/v1")
+	{
+		api.GET("/test", func(c *gin.Context) {
+			c.JSON(200, gin.H{"message": "FitStock API is running"})
+		})
+	}
+
+	// Get port from environment or default to 8080
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Printf("FitStock API server starting on port %s", port)
+	log.Fatal(r.Run(":" + port))
 }
