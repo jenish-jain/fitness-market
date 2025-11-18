@@ -10,6 +10,7 @@ import (
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// Get authorization header
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header required"})
@@ -17,13 +18,17 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		tokenString := strings.TrimPrefix(authHeader, "Bearer ")
-		if tokenString == authHeader {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Bearer token required"})
+		// Extract token from Bearer format
+		tokenParts := strings.Split(authHeader, " ")
+		if len(tokenParts) != 2 || tokenParts[0] != "Bearer" {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authorization header format"})
 			c.Abort()
 			return
 		}
 
+		tokenString := tokenParts[1]
+
+		// Initialize Supabase client
 		supabaseClient, err := auth.NewSupabaseClient()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Authentication service unavailable"})
@@ -31,6 +36,7 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
+		// Validate token
 		token, err := supabaseClient.ValidateToken(c.Request.Context(), tokenString)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
@@ -38,14 +44,16 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		userClaims, err := supabaseClient.GetUserFromToken(token)
+		// Get user from token
+		user, err := supabaseClient.GetUserFromToken(token)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid user token"})
 			c.Abort()
 			return
 		}
 
-		c.Set("user", userClaims)
+		// Set user in context
+		c.Set("user", user)
 		c.Next()
 	}
 }

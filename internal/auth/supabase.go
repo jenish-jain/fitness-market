@@ -2,7 +2,11 @@ package auth
 
 import (
 	"context"
+	"crypto/rsa"
+	"encoding/base64"
+	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"strings"
 
@@ -11,54 +15,82 @@ import (
 )
 
 type SupabaseClient struct {
-	client *supabase.Client
+	client    *supabase.Client
+	jwtSecret string
+}
+
+type SupabaseUser struct {
+	ID    string `json:"sub"`
+	Email string `json:"email"`
+	Role  string `json:"role"`
 }
 
 func NewSupabaseClient() (*SupabaseClient, error) {
 	supabaseURL := os.Getenv("SUPABASE_URL")
 	supabaseKey := os.Getenv("SUPABASE_ANON_KEY")
+	jwtSecret := os.Getenv("SUPABASE_JWT_SECRET")
 
-	if supabaseURL == "" || supabaseKey == "" {
-		return nil, errors.New("supabase configuration not found")
+	if supabaseURL == "" || supabaseKey == "" || jwtSecret == "" {
+		return nil, errors.New("missing required Supabase environment variables")
 	}
 
 	client, err := supabase.NewClient(supabaseURL, supabaseKey, nil)
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("failed to create Supabase client: %w", err)
 	}
 
-	return &SupabaseClient{client: client}, nil
+	return &SupabaseClient{
+		client:    client,
+		jwtSecret: jwtSecret,
+	}, nil
 }
 
-func (s *SupabaseClient) ValidateToken(ctx context.Context, token string) (*jwt.Token, error) {
-	// Remove Bearer prefix if present
-	token = strings.TrimPrefix(token, "Bearer ")
-
-	// Parse JWT token
-	jwtToken, err := jwt.Parse(token, func(token *jwt.Token) (interface{}, error) {
-		// Verify signing method
+func (s *SupabaseClient) ValidateToken(ctx context.Context, tokenString string) (*jwt.Token, error) {
+	// Parse the token without verifying the signature first to extract header info
+	token, err := jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+		// Validate the signing method
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, errors.New("unexpected signing method")
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(os.Getenv("JWT_SECRET")), nil
+
+		// Return the JWT secret for HMAC validation
+		return []byte(s.jwtSecret), nil
 	})
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("invalid token: %w", err)
 	}
 
-	if !jwtToken.Valid {
-		return nil, errors.New("invalid token")
+	if !token.Valid {
+		return nil, errors.New("token is not valid")
 	}
 
-	return jwtToken, nil
+	return token, nil
 }
 
-func (s *SupabaseClient) GetUserFromToken(token *jwt.Token) (map[string]interface{}, error) {
+func (s *SupabaseClient) GetUserFromToken(token *jwt.Token) (*SupabaseUser, error) {
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
 		return nil, errors.New("invalid token claims")
 	}
 
-	return claims, nil
+	user := &SupabaseUser{}
+
+	if sub, ok := claims["sub"].(string); ok {
+		user.ID = sub
+	} else {
+		return nil, errors.New("missing user ID in token")
+	}
+
+	if email, ok := claims["email"].(string); ok {
+		user.Email = email
+	}
+
+	if role, ok := claims["role"].(string); ok {
+		user.Role = role
+	} else {
+		user.Role = "authenticated" // default role
+	}
+
+	return user, nil
 }
