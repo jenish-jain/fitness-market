@@ -10,7 +10,7 @@ import (
 
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		// Get authorization header
+		// Get Authorization header
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header required"})
@@ -18,15 +18,15 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// Extract token from Bearer format
-		tokenParts := strings.Split(authHeader, " ")
-		if len(tokenParts) != 2 || tokenParts[0] != "Bearer" {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authorization header format"})
+		// Check Bearer prefix
+		if !strings.HasPrefix(authHeader, "Bearer ") {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Bearer token required"})
 			c.Abort()
 			return
 		}
 
-		tokenString := tokenParts[1]
+		// Extract token
+		token := strings.TrimPrefix(authHeader, "Bearer ")
 
 		// Initialize Supabase client
 		supabaseClient, err := auth.NewSupabaseClient()
@@ -37,7 +37,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		// Validate token
-		token, err := supabaseClient.ValidateToken(c.Request.Context(), tokenString)
+		jwtToken, err := supabaseClient.ValidateToken(c.Request.Context(), token)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
 			c.Abort()
@@ -45,9 +45,9 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		// Get user from token
-		user, err := supabaseClient.GetUserFromToken(token)
+		user, err := supabaseClient.GetUserFromToken(jwtToken)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid user token"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Failed to extract user from token"})
 			c.Abort()
 			return
 		}

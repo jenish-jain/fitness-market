@@ -1,11 +1,12 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { User, AuthError } from '@supabase/supabase-js'
+import { useState, useEffect } from 'react'
+import { User, AuthError, Session } from '@supabase/supabase-js'
 import { supabase } from '@/lib/supabase'
 
-interface AuthState {
+export interface AuthState {
   user: User | null
+  session: Session | null
   loading: boolean
   error: AuthError | null
 }
@@ -13,36 +14,31 @@ interface AuthState {
 export function useAuth() {
   const [state, setState] = useState<AuthState>({
     user: null,
+    session: null,
     loading: true,
     error: null,
   })
 
   useEffect(() => {
     // Get initial session
-    const getInitialSession = async () => {
-      try {
-        const { data: { session }, error } = await supabase.auth.getSession()
-        setState({
-          user: session?.user ?? null,
-          loading: false,
-          error: error,
-        })
-      } catch (error) {
-        setState({
-          user: null,
-          loading: false,
-          error: error as AuthError,
-        })
-      }
+    const getSession = async () => {
+      const { data: { session }, error } = await supabase.auth.getSession()
+      setState({
+        user: session?.user ?? null,
+        session,
+        loading: false,
+        error,
+      })
     }
 
-    getInitialSession()
+    getSession()
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
+      async (event, session) => {
         setState({
           user: session?.user ?? null,
+          session,
           loading: false,
           error: null,
         })
@@ -60,10 +56,12 @@ export function useAuth() {
       password,
     })
 
-    setState(prev => ({
-      ...prev,
-      loading: false,
-      error: error,
+    setState(prev => ({ 
+      ...prev, 
+      loading: false, 
+      error,
+      user: data.user,
+      session: data.session,
     }))
 
     return { data, error }
@@ -77,10 +75,10 @@ export function useAuth() {
       password,
     })
 
-    setState(prev => ({
-      ...prev,
-      loading: false,
-      error: error,
+    setState(prev => ({ 
+      ...prev, 
+      loading: false, 
+      error,
     }))
 
     return { data, error }
@@ -93,8 +91,9 @@ export function useAuth() {
     
     setState({
       user: null,
+      session: null,
       loading: false,
-      error: error,
+      error,
     })
 
     return { error }
