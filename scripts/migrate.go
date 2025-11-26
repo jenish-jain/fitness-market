@@ -1,14 +1,13 @@
-package main
+package scripts
 
 import (
 	"fitness-market/internal/database"
 	"log"
-	"os"
 
 	"github.com/joho/godotenv"
 )
 
-func main() {
+func Migrate() {
 	// Load environment variables
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found")
