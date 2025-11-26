@@ -1,11 +1,5 @@
-import { AuthProvider } from '@/components/providers/AuthProvider'
+import { AuthProvider } from '@/providers/auth-provider'
 import './globals.css'
-import type { Metadata } from 'next'
-
-export const metadata: Metadata = {
-  title: 'Fitness Market',
-  description: 'Your fitness marketplace',
-}
 
 export default function RootLayout({
   children,

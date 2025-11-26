@@ -4,13 +4,16 @@ import (
 	"fitness-market/internal/auth"
 	"net/http"
 	"strings"
-
 	"github.com/gin-gonic/gin"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
+	supabaseAuth, err := auth.NewSupabaseAuth()
+	if err != nil {
+		panic("Failed to initialize Supabase auth: " + err.Error())
+	}
+
 	return func(c *gin.Context) {
-		// Get Authorization header
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization header required"})
@@ -18,36 +21,28 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// Check Bearer prefix
-		if !strings.HasPrefix(authHeader, "Bearer ") {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Bearer token required"})
+		// Extract token from "Bearer <token>"
+		parts := strings.Split(authHeader, " ")
+		if len(parts) != 2 || parts[0] != "Bearer" {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authorization header format"})
 			c.Abort()
 			return
 		}
 
-		// Extract token
-		token := strings.TrimPrefix(authHeader, "Bearer ")
+		tokenString := parts[1]
 
-		// Initialize Supabase client
-		supabaseClient, err := auth.NewSupabaseClient()
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Authentication service unavailable"})
-			c.Abort()
-			return
-		}
-
-		// Validate token
-		jwtToken, err := supabaseClient.ValidateToken(c.Request.Context(), token)
+		// Validate the JWT token
+		token, err := supabaseAuth.ValidateToken(tokenString)
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
 			c.Abort()
 			return
 		}
 
-		// Get user from token
-		user, err := supabaseClient.GetUserFromToken(jwtToken)
+		// Extract user information from token
+		user, err := supabaseAuth.GetUserFromToken(token)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Failed to extract user from token"})
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token claims"})
 			c.Abort()
 			return
 		}
