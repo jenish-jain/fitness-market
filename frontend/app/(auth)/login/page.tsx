@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { useAuth } from '@/hooks/useAuth'
 
@@ -11,6 +11,8 @@ export default function LoginPage() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const { signIn, error } = useAuth()
   const router = useRouter()
+  const searchParams = useSearchParams()
+  const registered = searchParams.get('registered')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -36,6 +38,12 @@ export default function LoginPage() {
           </h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          {registered && (
+            <div className="bg-green-50 border border-green-200 rounded-md p-4">
+              <p className="text-green-800 text-sm">Account created successfully! Please sign in.</p>
+            </div>
+          )}
+          
           {error && (
             <div className="bg-red-50 border border-red-200 rounded-md p-4">
               <p className="text-red-800 text-sm">{error.message}</p>
@@ -77,6 +85,14 @@ export default function LoginPage() {
             </div>
           </div>
 
+          <div className="flex items-center justify-end">
+            <div className="text-sm">
+              <Link href="/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500">
+                Forgot your password?
+              </Link>
+            </div>
+          </div>
+
           <div>
             <button
               type="submit"
@@ -88,9 +104,12 @@ export default function LoginPage() {
           </div>
 
           <div className="text-center">
-            <Link href="/register" className="text-indigo-600 hover:text-indigo-500">
-              Don't have an account? Sign up
-            </Link>
+            <p className="text-sm text-gray-600">
+              Don't have an account?{' '}
+              <Link href="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
+                Sign up
+              </Link>
+            </p>
           </div>
         </form>
       </div>
