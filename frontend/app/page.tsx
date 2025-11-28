@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import Link from 'next/link'
 
 export default function Home() {
   return (
@@ -22,6 +23,11 @@ export default function Home() {
           <CardContent className="space-y-4">
             <Button className="w-full">Browse Equipment</Button>
             <Button variant="outline" className="w-full">Find Services</Button>
+            <div className="pt-4 border-t">
+              <Link href="/login">
+                <Button variant="secondary" className="w-full">Login</Button>
+              </Link>
+            </div>
           </CardContent>
         </Card>
         
