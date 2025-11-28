@@ -1,18 +1,17 @@
 package middleware
 
 import (
-	"fitness-market/internal/auth"
 	"net/http"
 	"strings"
+
+	"fitness-market/internal/auth"
+	"fitness-market/internal/database"
+	"fitness-market/internal/models"
+
 	"github.com/gin-gonic/gin"
 )
 
 func AuthMiddleware() gin.HandlerFunc {
-	supabaseAuth, err := auth.NewSupabaseAuth()
-	if err != nil {
-		panic("Failed to initialize Supabase auth: " + err.Error())
-	}
-
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {
@@ -21,9 +20,8 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		// Extract token from "Bearer <token>"
 		parts := strings.Split(authHeader, " ")
-		if len(parts) != 2 || parts[0] != "Bearer" {
+		if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid authorization header format"})
 			c.Abort()
 			return
@@ -31,24 +29,28 @@ func AuthMiddleware() gin.HandlerFunc {
 
 		tokenString := parts[1]
 
-		// Validate the JWT token
-		token, err := supabaseAuth.ValidateToken(tokenString)
+		claims, err := auth.ValidateToken(tokenString)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			if err == auth.ErrExpiredToken {
+				c.JSON(http.StatusUnauthorized, gin.H{"error": "Token has expired"})
+			} else {
+				c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token"})
+			}
 			c.Abort()
 			return
 		}
 
-		// Extract user information from token
-		user, err := supabaseAuth.GetUserFromToken(token)
-		if err != nil {
-			c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid token claims"})
+		var user models.User
+		if err := database.DB.First(&user, claims.UserID).Error; err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
 			c.Abort()
 			return
 		}
 
-		// Set user in context
-		c.Set("user", user)
+		c.Set("user", &user)
+		c.Set("user_id", user.ID)
+		c.Set("claims", claims)
+
 		c.Next()
 	}
 }

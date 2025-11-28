@@ -2,6 +2,7 @@ package main
 
 import (
 	"fitness-market/internal/database"
+	"fitness-market/internal/handlers"
 	"fitness-market/internal/middleware"
 	"log"
 	"os"
@@ -22,10 +23,32 @@ func main() {
 	// Setup Gin router
 	r := gin.Default()
 
+	// CORS middleware for frontend
+	r.Use(func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+		c.Next()
+	})
+
 	// Public routes
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})
 	})
+
+	// Auth routes (public)
+	auth := r.Group("/api/v1/auth")
+	{
+		auth.POST("/register", handlers.Register)
+		auth.POST("/login", handlers.Login)
+		auth.POST("/logout", handlers.Logout)
+		auth.POST("/reset-password", handlers.RequestPasswordReset)
+		auth.POST("/reset-password/confirm", handlers.ResetPassword)
+	}
 
 	// Protected routes
 	api := r.Group("/api/v1")
