@@ -20,6 +20,9 @@ func main() {
 	// Initialize database
 	database.Init()
 
+	// Run migrations
+	database.RunMigrations()
+
 	// Setup Gin router
 	r := gin.Default()
 
@@ -54,10 +57,17 @@ func main() {
 	api := r.Group("/api/v1")
 	api.Use(middleware.AuthMiddleware())
 	{
-		api.GET("/profile", func(c *gin.Context) {
-			user, _ := c.Get("user")
-			c.JSON(200, gin.H{"user": user})
-		})
+		api.GET("/profile", handlers.GetUserProfile)
+
+		// Bodyweight routes
+		api.POST("/profile/bodyweight", handlers.AddBodyweight)
+		api.GET("/profile/bodyweight", handlers.GetBodyweightHistory)
+
+		// Exercise PR routes
+		api.POST("/profile/exercise-prs", handlers.AddExercisePR)
+		api.GET("/profile/exercise-prs", handlers.GetExercisePRs)
+		api.PUT("/profile/exercise-prs/:id", handlers.UpdateExercisePR)
+		api.DELETE("/profile/exercise-prs/:id", handlers.DeleteExercisePR)
 	}
 
 	// Start server
