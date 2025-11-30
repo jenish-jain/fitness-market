@@ -74,6 +74,9 @@ func main() {
 		api.GET("/exercises", handlers.GetExercises)
 		api.PUT("/exercises/:id", handlers.UpdateExercise)
 		api.DELETE("/exercises/:id", handlers.DeleteExercise)
+
+		// Workout entry routes
+		api.POST("/entries", handlers.CreateEntry)
 	}
 
 	// Start server
