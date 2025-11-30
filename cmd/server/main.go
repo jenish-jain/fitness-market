@@ -68,6 +68,12 @@ func main() {
 		api.GET("/profile/exercise-prs", handlers.GetExercisePRs)
 		api.PUT("/profile/exercise-prs/:id", handlers.UpdateExercisePR)
 		api.DELETE("/profile/exercise-prs/:id", handlers.DeleteExercisePR)
+
+		// Exercise CRUD routes
+		api.POST("/exercises", handlers.CreateExercise)
+		api.GET("/exercises", handlers.GetExercises)
+		api.PUT("/exercises/:id", handlers.UpdateExercise)
+		api.DELETE("/exercises/:id", handlers.DeleteExercise)
 	}
 
 	// Start server
