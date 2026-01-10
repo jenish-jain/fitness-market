@@ -1,35 +1,35 @@
 # Fitness Market Frontend
 
-## Setup
+This is a Next.js frontend application.
 
-1. Install dependencies:
+## Getting Started
+
+First, install dependencies:
+
 ```bash
 npm install
 ```
 
-2. Copy environment variables:
+Then, build the application:
+
 ```bash
-cp .env.local.example .env.local
+npm run build
 ```
 
-3. Update `.env.local` with your Supabase credentials:
-- `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Your Supabase anonymous key
-- `NEXT_PUBLIC_API_URL`: Your backend API URL
+Finally, start the production server:
 
-4. Run the development server:
+```bash
+npm run start
+```
+
+Or for development:
+
 ```bash
 npm run dev
 ```
 
-## Authentication
+## Note
 
-The app uses Supabase for authentication with:
-- Email/password registration and login
-- JWT token validation
-- Protected routes with AuthGuard
-- Automatic token refresh
+The `npm run start` command runs the production server which requires a build first. If you encounter the error `ENOENT: no such file or directory, open '.next/BUILD_ID'`, it means you need to run `npm run build` before `npm run start`.
 
-## API Integration
-
-The frontend automatically includes Supabase JWT tokens in API requests to the Go backend.
+For development purposes, use `npm run dev` instead which doesn't require a prior build.
