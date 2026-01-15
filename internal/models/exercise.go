@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"time"
 
 	"gorm.io/gorm"
@@ -33,7 +34,7 @@ func (e *Exercise) BeforeCreate(tx *gorm.DB) error {
 	var count int64
 	tx.Model(&Exercise{}).Where("user_id = ? AND ticker = ?", e.UserID, e.Ticker).Count(&count)
 	if count > 0 {
-		return gorm.ErrDuplicatedKey
+		return errors.New("ticker symbol already exists for this user")
 	}
 	return nil
 }
@@ -43,7 +44,7 @@ func (e *Exercise) BeforeUpdate(tx *gorm.DB) error {
 	var count int64
 	tx.Model(&Exercise{}).Where("user_id = ? AND ticker = ? AND id != ?", e.UserID, e.Ticker, e.ID).Count(&count)
 	if count > 0 {
-		return gorm.ErrDuplicatedKey
+		return errors.New("ticker symbol already exists for this user")
 	}
 	return nil
 }
