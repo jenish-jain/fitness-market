@@ -3,6 +3,7 @@ package handlers
 import (
 	"errors"
 	"net/http"
+	"regexp"
 	"strconv"
 	"strings"
 
@@ -29,11 +30,24 @@ type UpdateExerciseRequest struct {
 	StockPrice  float64 `json:"stock_price"`
 }
 
+// validateTicker validates the ticker symbol format
+func validateTicker(ticker string) error {
+	if len(ticker) < 2 || len(ticker) > 10 {
+		return errors.New("ticker symbol must be between 2 and 10 characters")
+	}
+	// Ticker must be uppercase alphanumeric only
+	matched, _ := regexp.MatchString("^[A-Z0-9]+$", ticker)
+	if !matched {
+		return errors.New("ticker symbol must contain only uppercase letters and numbers")
+	}
+	return nil
+}
+
 // CreateExercise creates a new exercise for the authenticated user
 func CreateExercise(c *gin.Context) {
 	userID, exists := c.Get("user_id")
 	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
 		return
 	}
 
@@ -44,11 +58,30 @@ func CreateExercise(c *gin.Context) {
 	}
 
 	// Normalize ticker to uppercase
-	ticker := strings.ToUpper(strings.TrimSpace(req.Ticker))
+	req.Ticker = strings.ToUpper(strings.TrimSpace(req.Ticker))
+	req.Name = strings.TrimSpace(req.Name)
+
+	// Validate ticker format
+	if err := validateTicker(req.Ticker); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Check ticker uniqueness for this user
+	var existingExercise models.Exercise
+	err := database.DB.Where("user_id = ? AND ticker = ?", userID, req.Ticker).First(&existingExercise).Error
+	if err == nil {
+		c.JSON(http.StatusConflict, gin.H{"error": "Ticker symbol already exists for this user"})
+		return
+	}
+	if !errors.Is(err, gorm.ErrRecordNotFound) {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
+		return
+	}
 
 	exercise := models.Exercise{
 		UserID:      userID.(uint),
-		Ticker:      ticker,
+		Ticker:      req.Ticker,
 		Name:        req.Name,
 		Description: req.Description,
 		Category:    req.Category,
@@ -56,22 +89,25 @@ func CreateExercise(c *gin.Context) {
 	}
 
 	if err := database.DB.Create(&exercise).Error; err != nil {
-		if errors.Is(err, gorm.ErrDuplicatedKey) {
-			c.JSON(http.StatusConflict, gin.H{"error": "Ticker already exists for this user"})
+		if strings.Contains(err.Error(), "ticker symbol already exists") {
+			c.JSON(http.StatusConflict, gin.H{"error": "Ticker symbol already exists for this user"})
 			return
 		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create exercise"})
 		return
 	}
 
-	c.JSON(http.StatusCreated, exercise)
+	c.JSON(http.StatusCreated, gin.H{
+		"message":  "Exercise created successfully",
+		"exercise": exercise,
+	})
 }
 
 // GetExercises returns all exercises for the authenticated user
 func GetExercises(c *gin.Context) {
 	userID, exists := c.Get("user_id")
 	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
 		return
 	}
 
@@ -81,14 +117,14 @@ func GetExercises(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, exercises)
+	c.JSON(http.StatusOK, gin.H{"exercises": exercises})
 }
 
 // UpdateExercise updates an exercise for the authenticated user
 func UpdateExercise(c *gin.Context) {
 	userID, exists := c.Get("user_id")
 	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
 		return
 	}
 
@@ -104,7 +140,7 @@ func UpdateExercise(c *gin.Context) {
 			c.JSON(http.StatusNotFound, gin.H{"error": "Exercise not found"})
 			return
 		}
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch exercise"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
 		return
 	}
 
@@ -116,10 +152,26 @@ func UpdateExercise(c *gin.Context) {
 
 	// Update fields if provided
 	if req.Ticker != "" {
-		exercise.Ticker = strings.ToUpper(strings.TrimSpace(req.Ticker))
+		req.Ticker = strings.ToUpper(strings.TrimSpace(req.Ticker))
+		if err := validateTicker(req.Ticker); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+		// Check ticker uniqueness for this user (excluding current exercise)
+		var existingExercise models.Exercise
+		err := database.DB.Where("user_id = ? AND ticker = ? AND id != ?", userID, req.Ticker, exerciseID).First(&existingExercise).Error
+		if err == nil {
+			c.JSON(http.StatusConflict, gin.H{"error": "Ticker symbol already exists for this user"})
+			return
+		}
+		if !errors.Is(err, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
+			return
+		}
+		exercise.Ticker = req.Ticker
 	}
 	if req.Name != "" {
-		exercise.Name = req.Name
+		exercise.Name = strings.TrimSpace(req.Name)
 	}
 	if req.Description != "" {
 		exercise.Description = req.Description
@@ -132,22 +184,25 @@ func UpdateExercise(c *gin.Context) {
 	}
 
 	if err := database.DB.Save(&exercise).Error; err != nil {
-		if errors.Is(err, gorm.ErrDuplicatedKey) {
-			c.JSON(http.StatusConflict, gin.H{"error": "Ticker already exists for this user"})
+		if strings.Contains(err.Error(), "ticker symbol already exists") {
+			c.JSON(http.StatusConflict, gin.H{"error": "Ticker symbol already exists for this user"})
 			return
 		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update exercise"})
 		return
 	}
 
-	c.JSON(http.StatusOK, exercise)
+	c.JSON(http.StatusOK, gin.H{
+		"message":  "Exercise updated successfully",
+		"exercise": exercise,
+	})
 }
 
 // DeleteExercise deletes an exercise for the authenticated user
 func DeleteExercise(c *gin.Context) {
 	userID, exists := c.Get("user_id")
 	if !exists {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Unauthorized"})
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
 		return
 	}
 
@@ -157,14 +212,18 @@ func DeleteExercise(c *gin.Context) {
 		return
 	}
 
-	result := database.DB.Where("id = ? AND user_id = ?", exerciseID, userID).Delete(&models.Exercise{})
-	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete exercise"})
+	var exercise models.Exercise
+	if err := database.DB.Where("id = ? AND user_id = ?", exerciseID, userID).First(&exercise).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Exercise not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Database error"})
 		return
 	}
 
-	if result.RowsAffected == 0 {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Exercise not found"})
+	if err := database.DB.Delete(&exercise).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete exercise"})
 		return
 	}
 

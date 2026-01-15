@@ -1,0 +1,844 @@
+{
+  "version": "1.0",
+  "indexed_at": "2026-01-15T13:01:02.951842+05:30",
+  "repo_root": "workspace/fitness-market",
+  "git_commit_hash": "dec2528d9e0f0de5c237761c32b9c8b873c75bd0",
+  "files": {
+    ".env": {
+      "path": ".env",
+      "size": 135,
+      "importance": 5,
+      "category": "config",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.600804319+05:30",
+      "summary": ""
+    },
+    ".env.example": {
+      "path": ".env.example",
+      "size": 332,
+      "importance": 5,
+      "category": "config",
+      "dependencies": null,
+      "last_modified": "2025-11-27T00:41:43.230307612+05:30",
+      "summary": ".env"
+    },
+    ".gitignore": {
+      "path": ".gitignore",
+      "size": 62,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.601104528+05:30",
+      "summary": ""
+    },
+    "Makefile": {
+      "path": "Makefile",
+      "size": 417,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2026-01-10T14:24:35.427496305+05:30",
+      "summary": "Makefile"
+    },
+    "README.md": {
+      "path": "README.md",
+      "size": 17,
+      "importance": 4,
+      "category": "doc",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.601351403+05:30",
+      "summary": "README"
+    },
+    "cmd/server/main.go": {
+      "path": "cmd/server/main.go",
+      "size": 2262,
+      "importance": 10,
+      "category": "core",
+      "dependencies": [
+        "fitness-market/internal/database",
+        "fitness-market/internal/handlers",
+        "fitness-market/internal/middleware",
+        "log",
+        "os",
+        "github.com/gin-gonic/gin",
+        "github.com/joho/godotenv"
+      ],
+      "last_modified": "2025-11-30T11:38:09.154647223+05:30",
+      "summary": "main"
+    },
+    "docs/README.md": {
+      "path": "docs/README.md",
+      "size": 86,
+      "importance": 4,
+      "category": "doc",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.60181732+05:30",
+      "summary": "docs - README"
+    },
+    "frontend/.env.example": {
+      "path": "frontend/.env.example",
+      "size": 132,
+      "importance": 5,
+      "category": "config",
+      "dependencies": null,
+      "last_modified": "2025-11-28T17:17:45.879396095+05:30",
+      "summary": "frontend - .env"
+    },
+    "frontend/.env.local": {
+      "path": "frontend/.env.local",
+      "size": 163,
+      "importance": 5,
+      "category": "config",
+      "dependencies": null,
+      "last_modified": "2026-01-15T12:50:02.206086689+05:30",
+      "summary": "frontend - .env"
+    },
+    "frontend/.env.local.example": {
+      "path": "frontend/.env.local.example",
+      "size": 190,
+      "importance": 5,
+      "category": "config",
+      "dependencies": null,
+      "last_modified": "2025-11-27T00:16:12.667500926+05:30",
+      "summary": "frontend - .env.local"
+    },
+    "frontend/README.md": {
+      "path": "frontend/README.md",
+      "size": 648,
+      "importance": 4,
+      "category": "doc",
+      "dependencies": null,
+      "last_modified": "2026-01-10T14:33:19.21785872+05:30",
+      "summary": "frontend - README"
+    },
+    "frontend/app/(auth)/forgot-password/page.tsx": {
+      "path": "frontend/app/(auth)/forgot-password/page.tsx",
+      "size": 3618,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-28T17:28:54.608234993+05:30",
+      "summary": "page"
+    },
+    "frontend/app/(auth)/login/page.tsx": {
+      "path": "frontend/app/(auth)/login/page.tsx",
+      "size": 4421,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-28T17:28:54.624442248+05:30",
+      "summary": "page"
+    },
+    "frontend/app/(auth)/register/page.tsx": {
+      "path": "frontend/app/(auth)/register/page.tsx",
+      "size": 4971,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-28T17:28:54.576345741+05:30",
+      "summary": "page"
+    },
+    "frontend/app/(auth)/reset-password/page.tsx": {
+      "path": "frontend/app/(auth)/reset-password/page.tsx",
+      "size": 4973,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-28T17:28:54.616852856+05:30",
+      "summary": "page"
+    },
+    "frontend/app/globals.css": {
+      "path": "frontend/app/globals.css",
+      "size": 537,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-27T00:04:19.104665104+05:30",
+      "summary": "globals"
+    },
+    "frontend/app/layout.tsx": {
+      "path": "frontend/app/layout.tsx",
+      "size": 312,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-27T00:29:56.81529659+05:30",
+      "summary": "layout"
+    },
+    "frontend/app/metadata.ts": {
+      "path": "frontend/app/metadata.ts",
+      "size": 153,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.603761364+05:30",
+      "summary": "metadata"
+    },
+    "frontend/app/page.tsx": {
+      "path": "frontend/app/page.tsx",
+      "size": 2551,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-28T17:55:44.847779262+05:30",
+      "summary": "page"
+    },
+    "frontend/components/auth/LoginForm.tsx": {
+      "path": "frontend/components/auth/LoginForm.tsx",
+      "size": 2283,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2026-01-10T15:43:34.85807025+05:30",
+      "summary": "LoginForm"
+    },
+    "frontend/components/auth/LogoutButton.tsx": {
+      "path": "frontend/components/auth/LogoutButton.tsx",
+      "size": 718,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-28T17:28:54.639155483+05:30",
+      "summary": "LogoutButton"
+    },
+    "frontend/components/auth/RegisterForm.tsx": {
+      "path": "frontend/components/auth/RegisterForm.tsx",
+      "size": 3111,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.60441649+05:30",
+      "summary": "RegisterForm"
+    },
+    "frontend/components/auth/auth-guard.tsx": {
+      "path": "frontend/components/auth/auth-guard.tsx",
+      "size": 1031,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.604554281+05:30",
+      "summary": "auth guard"
+    },
+    "frontend/components/auth/login-form.tsx": {
+      "path": "frontend/components/auth/login-form.tsx",
+      "size": 1735,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.604710531+05:30",
+      "summary": "login form"
+    },
+    "frontend/components/auth/register-form.tsx": {
+      "path": "frontend/components/auth/register-form.tsx",
+      "size": 2335,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.604816573+05:30",
+      "summary": "register form"
+    },
+    "frontend/components/providers/AuthProvider.tsx": {
+      "path": "frontend/components/providers/AuthProvider.tsx",
+      "size": 2570,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2026-01-15T12:49:07.563309407+05:30",
+      "summary": "AuthProvider"
+    },
+    "frontend/components/ui/alert.tsx": {
+      "path": "frontend/components/ui/alert.tsx",
+      "size": 1584,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2026-01-10T14:36:04.080429384+05:30",
+      "summary": "alert"
+    },
+    "frontend/components/ui/button.tsx": {
+      "path": "frontend/components/ui/button.tsx",
+      "size": 1834,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.605648532+05:30",
+      "summary": "button"
+    },
+    "frontend/components/ui/card.tsx": {
+      "path": "frontend/components/ui/card.tsx",
+      "size": 1876,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.605829949+05:30",
+      "summary": "card"
+    },
+    "frontend/components/ui/index.ts": {
+      "path": "frontend/components/ui/index.ts",
+      "size": 160,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.605949199+05:30",
+      "summary": "index"
+    },
+    "frontend/components/ui/input.tsx": {
+      "path": "frontend/components/ui/input.tsx",
+      "size": 823,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.606081324+05:30",
+      "summary": "input"
+    },
+    "frontend/components/ui/label.tsx": {
+      "path": "frontend/components/ui/label.tsx",
+      "size": 724,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2026-01-10T14:36:04.080625177+05:30",
+      "summary": "label"
+    },
+    "frontend/hooks/useAuth.ts": {
+      "path": "frontend/hooks/useAuth.ts",
+      "size": 4936,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-28T17:28:54.631895721+05:30",
+      "summary": "useAuth"
+    },
+    "frontend/lib/api.ts": {
+      "path": "frontend/lib/api.ts",
+      "size": 964,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.606794825+05:30",
+      "summary": "api"
+    },
+    "frontend/lib/query-client.ts": {
+      "path": "frontend/lib/query-client.ts",
+      "size": 208,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.606945284+05:30",
+      "summary": "query client"
+    },
+    "frontend/lib/supabase.ts": {
+      "path": "frontend/lib/supabase.ts",
+      "size": 751,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-28T17:17:45.907632841+05:30",
+      "summary": "supabase"
+    },
+    "frontend/lib/utils.ts": {
+      "path": "frontend/lib/utils.ts",
+      "size": 165,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.607214159+05:30",
+      "summary": "utils"
+    },
+    "frontend/next-env.d.ts": {
+      "path": "frontend/next-env.d.ts",
+      "size": 201,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.607383951+05:30",
+      "summary": "frontend - next env.d"
+    },
+    "frontend/next.config.js": {
+      "path": "frontend/next.config.js",
+      "size": 91,
+      "importance": 5,
+      "category": "config",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.607532909+05:30",
+      "summary": "frontend - next.config"
+    },
+    "frontend/package-lock.json": {
+      "path": "frontend/package-lock.json",
+      "size": 166553,
+      "importance": 5,
+      "category": "config",
+      "dependencies": null,
+      "last_modified": "2026-01-15T12:55:07.620749468+05:30",
+      "summary": "frontend - package lock"
+    },
+    "frontend/package.json": {
+      "path": "frontend/package.json",
+      "size": 957,
+      "importance": 5,
+      "category": "config",
+      "dependencies": null,
+      "last_modified": "2026-01-15T12:49:35.814505821+05:30",
+      "summary": "frontend - package"
+    },
+    "frontend/postcss.config.js": {
+      "path": "frontend/postcss.config.js",
+      "size": 81,
+      "importance": 5,
+      "category": "config",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.610292203+05:30",
+      "summary": "frontend - postcss.config"
+    },
+    "frontend/providers/auth-provider.tsx": {
+      "path": "frontend/providers/auth-provider.tsx",
+      "size": 2457,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-27T00:29:56.816531309+05:30",
+      "summary": "auth provider"
+    },
+    "frontend/tailwind.config.ts": {
+      "path": "frontend/tailwind.config.ts",
+      "size": 2188,
+      "importance": 5,
+      "category": "config",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.61045962+05:30",
+      "summary": "frontend - tailwind.config"
+    },
+    "frontend/tsconfig.json": {
+      "path": "frontend/tsconfig.json",
+      "size": 590,
+      "importance": 5,
+      "category": "config",
+      "dependencies": null,
+      "last_modified": "2025-11-27T00:04:19.10642253+05:30",
+      "summary": "frontend - tsconfig"
+    },
+    "go.mod": {
+      "path": "go.mod",
+      "size": 2037,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.610798162+05:30",
+      "summary": "go"
+    },
+    "go.sum": {
+      "path": "go.sum",
+      "size": 10683,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2025-11-26T23:49:18.611145204+05:30",
+      "summary": "go"
+    },
+    "internal/auth/jwt.go": {
+      "path": "internal/auth/jwt.go",
+      "size": 2009,
+      "importance": 5,
+      "category": "core",
+      "dependencies": [
+        "errors",
+        "os",
+        "time",
+        "github.com/golang-jwt/jwt/v5"
+      ],
+      "last_modified": "2025-11-28T16:20:43.685031781+05:30",
+      "summary": "jwt"
+    },
+    "internal/auth/supabase.go": {
+      "path": "internal/auth/supabase.go",
+      "size": 1235,
+      "importance": 5,
+      "category": "core",
+      "dependencies": [
+        "fmt",
+        "os",
+        "time",
+        "github.com/golang-jwt/jwt/v5"
+      ],
+      "last_modified": "2025-11-27T00:29:56.816959897+05:30",
+      "summary": "supabase"
+    },
+    "internal/database/database.go": {
+      "path": "internal/database/database.go",
+      "size": 1436,
+      "importance": 5,
+      "category": "core",
+      "dependencies": [
+        "gorm.io/driver/sqlite",
+        "gorm.io/gorm",
+        "gorm.io/gorm/logger",
+        "fitness-market/internal/models",
+        "log",
+        "os"
+      ],
+      "last_modified": "2025-11-26T23:49:18.612008122+05:30",
+      "summary": "database"
+    },
+    "internal/database/migrations.go": {
+      "path": "internal/database/migrations.go",
+      "size": 372,
+      "importance": 5,
+      "category": "core",
+      "dependencies": [
+        "fitness-market/internal/models",
+        "log"
+      ],
+      "last_modified": "2025-11-28T17:23:41.602920257+05:30",
+      "summary": "migrations"
+    },
+    "internal/handlers/auth.go": {
+      "path": "internal/handlers/auth.go",
+      "size": 5413,
+      "importance": 5,
+      "category": "core",
+      "dependencies": [
+        "crypto/rand",
+        "encoding/hex",
+        "net/http",
+        "golang.org/x/crypto/bcrypt",
+        "github.com/gin-gonic/gin",
+        "strings",
+        "time",
+        "fitness-market/internal/auth",
+        "fitness-market/internal/database",
+        "fitness-market/internal/models"
+      ],
+      "last_modified": "2025-11-28T16:20:43.692630455+05:30",
+      "summary": "auth"
+    },
+    "internal/handlers/entries.go": {
+      "path": "internal/handlers/entries.go",
+      "size": 2915,
+      "importance": 5,
+      "category": "core",
+      "dependencies": [
+        "fitness-market/internal/database",
+        "fitness-market/internal/models",
+        "fitness-market/internal/services",
+        "github.com/gin-gonic/gin",
+        "net/http",
+        "time"
+      ],
+      "last_modified": "2025-11-30T11:38:09.14682526+05:30",
+      "summary": "entries"
+    },
+    "internal/handlers/exercise.go": {
+      "path": "internal/handlers/exercise.go",
+      "size": 4676,
+      "importance": 5,
+      "category": "core",
+      "dependencies": [
+        "net/http",
+        "strconv",
+        "strings",
+        "fitness-market/internal/database",
+        "fitness-market/internal/models",
+        "github.com/gin-gonic/gin",
+        "gorm.io/gorm",
+        "errors"
+      ],
+      "last_modified": "2025-11-30T11:34:21.738213771+05:30",
+      "summary": "exercise"
+    },
+    "internal/handlers/profile.go": {
+      "path": "internal/handlers/profile.go",
+      "size": 5709,
+      "importance": 5,
+      "category": "core",
+      "dependencies": [
+        "fitness-market/internal/database",
+        "fitness-market/internal/models",
+        "net/http",
+        "time",
+        "github.com/gin-gonic/gin"
+      ],
+      "last_modified": "2025-11-28T17:23:41.591800403+05:30",
+      "summary": "profile"
+    },
+    "internal/middleware/auth.go": {
+      "path": "internal/middleware/auth.go",
+      "size": 1266,
+      "importance": 5,
+      "category": "core",
+      "dependencies": [
+        "github.com/gin-gonic/gin",
+        "net/http",
+        "strings",
+        "fitness-market/internal/auth",
+        "fitness-market/internal/database",
+        "fitness-market/internal/models"
+      ],
+      "last_modified": "2025-11-28T16:20:43.70063259+05:30",
+      "summary": "auth"
+    },
+    "internal/models/exercise.go": {
+      "path": "internal/models/exercise.go",
+      "size": 1558,
+      "importance": 5,
+      "category": "core",
+      "dependencies": [
+        "time",
+        "gorm.io/gorm"
+      ],
+      "last_modified": "2025-11-30T11:34:21.702783748+05:30",
+      "summary": "exercise"
+    },
+    "internal/models/portfolio_snapshot.go": {
+      "path": "internal/models/portfolio_snapshot.go",
+      "size": 710,
+      "importance": 5,
+      "category": "core",
+      "dependencies": [
+        "gorm.io/gorm",
+        "time"
+      ],
+      "last_modified": "2025-11-26T23:49:18.612663956+05:30",
+      "summary": "portfolio snapshot"
+    },
+    "internal/models/user.go": {
+      "path": "internal/models/user.go",
+      "size": 584,
+      "importance": 5,
+      "category": "core",
+      "dependencies": [
+        "time",
+        "gorm.io/gorm"
+      ],
+      "last_modified": "2025-11-28T17:23:41.56471213+05:30",
+      "summary": "user"
+    },
+    "internal/models/user_profile.go": {
+      "path": "internal/models/user_profile.go",
+      "size": 1639,
+      "importance": 5,
+      "category": "core",
+      "dependencies": [
+        "time",
+        "gorm.io/gorm"
+      ],
+      "last_modified": "2025-11-28T17:23:41.586399873+05:30",
+      "summary": "user profile"
+    },
+    "internal/models/workout_entry.go": {
+      "path": "internal/models/workout_entry.go",
+      "size": 995,
+      "importance": 5,
+      "category": "core",
+      "dependencies": [
+        "time",
+        "gorm.io/gorm"
+      ],
+      "last_modified": "2025-11-30T11:38:09.105213442+05:30",
+      "summary": "workout entry"
+    },
+    "internal/services/score_service.go": {
+      "path": "internal/services/score_service.go",
+      "size": 836,
+      "importance": 5,
+      "category": "core",
+      "dependencies": [
+        "fitness-market/internal/database",
+        "fitness-market/internal/models"
+      ],
+      "last_modified": "2025-11-28T17:23:41.597426185+05:30",
+      "summary": "score service"
+    },
+    "internal/services/scoring_engine.go": {
+      "path": "internal/services/scoring_engine.go",
+      "size": 2221,
+      "importance": 5,
+      "category": "core",
+      "dependencies": [
+        "fitness-market/internal/database",
+        "fitness-market/internal/models"
+      ],
+      "last_modified": "2025-11-30T11:38:09.136989295+05:30",
+      "summary": "scoring engine"
+    },
+    "internal/utils/jwt.go": {
+      "path": "internal/utils/jwt.go",
+      "size": 1380,
+      "importance": 5,
+      "category": "core",
+      "dependencies": [
+        "encoding/hex",
+        "errors",
+        "os",
+        "time",
+        "github.com/golang-jwt/jwt/v5",
+        "crypto/rand"
+      ],
+      "last_modified": "2026-01-10T14:11:53.424521429+05:30",
+      "summary": "jwt"
+    },
+    "scripts/migrate.go": {
+      "path": "scripts/migrate.go",
+      "size": 450,
+      "importance": 5,
+      "category": "other",
+      "dependencies": [
+        "fitness-market/internal/database",
+        "log",
+        "github.com/joho/godotenv"
+      ],
+      "last_modified": "2025-11-26T23:49:18.613143539+05:30",
+      "summary": "scripts - migrate"
+    },
+    "scripts/seed.go": {
+      "path": "scripts/seed.go",
+      "size": 4475,
+      "importance": 5,
+      "category": "other",
+      "dependencies": [
+        "fitness-market/internal/models",
+        "log",
+        "time",
+        "github.com/joho/godotenv",
+        "fitness-market/internal/database"
+      ],
+      "last_modified": "2025-11-26T23:49:18.613507623+05:30",
+      "summary": "scripts - seed"
+    },
+    "web/src/components/WorkoutEntryForm.tsx": {
+      "path": "web/src/components/WorkoutEntryForm.tsx",
+      "size": 9520,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2026-01-10T14:11:57.782335243+05:30",
+      "summary": "WorkoutEntryForm"
+    },
+    "web/src/pages/WorkoutEntryPage.tsx": {
+      "path": "web/src/pages/WorkoutEntryPage.tsx",
+      "size": 2029,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2026-01-10T14:11:57.782896499+05:30",
+      "summary": "WorkoutEntryPage"
+    },
+    "web/src/services/api.ts": {
+      "path": "web/src/services/api.ts",
+      "size": 2630,
+      "importance": 5,
+      "category": "other",
+      "dependencies": null,
+      "last_modified": "2026-01-10T14:11:57.783366503+05:30",
+      "summary": "api"
+    }
+  },
+  "modules": {
+    ".env": [
+      ".env"
+    ],
+    ".env.example": [
+      ".env.example"
+    ],
+    ".gitignore": [
+      ".gitignore"
+    ],
+    "Makefile": [
+      "Makefile"
+    ],
+    "README.md": [
+      "README.md"
+    ],
+    "auth": [
+      "internal/auth/jwt.go",
+      "internal/auth/supabase.go"
+    ],
+    "database": [
+      "internal/database/database.go",
+      "internal/database/migrations.go"
+    ],
+    "docs": [
+      "docs/README.md"
+    ],
+    "frontend": [
+      "frontend/.env.example",
+      "frontend/.env.local",
+      "frontend/.env.local.example",
+      "frontend/README.md",
+      "frontend/app/(auth)/forgot-password/page.tsx",
+      "frontend/app/(auth)/login/page.tsx",
+      "frontend/app/(auth)/register/page.tsx",
+      "frontend/app/(auth)/reset-password/page.tsx",
+      "frontend/app/globals.css",
+      "frontend/app/layout.tsx",
+      "frontend/app/metadata.ts",
+      "frontend/app/page.tsx",
+      "frontend/components/auth/LoginForm.tsx",
+      "frontend/components/auth/LogoutButton.tsx",
+      "frontend/components/auth/RegisterForm.tsx",
+      "frontend/components/auth/auth-guard.tsx",
+      "frontend/components/auth/login-form.tsx",
+      "frontend/components/auth/register-form.tsx",
+      "frontend/components/providers/AuthProvider.tsx",
+      "frontend/components/ui/alert.tsx",
+      "frontend/components/ui/button.tsx",
+      "frontend/components/ui/card.tsx",
+      "frontend/components/ui/index.ts",
+      "frontend/components/ui/input.tsx",
+      "frontend/components/ui/label.tsx",
+      "frontend/hooks/useAuth.ts",
+      "frontend/lib/api.ts",
+      "frontend/lib/query-client.ts",
+      "frontend/lib/supabase.ts",
+      "frontend/lib/utils.ts",
+      "frontend/next-env.d.ts",
+      "frontend/next.config.js",
+      "frontend/package-lock.json",
+      "frontend/package.json",
+      "frontend/postcss.config.js",
+      "frontend/providers/auth-provider.tsx",
+      "frontend/tailwind.config.ts",
+      "frontend/tsconfig.json"
+    ],
+    "go.mod": [
+      "go.mod"
+    ],
+    "go.sum": [
+      "go.sum"
+    ],
+    "handlers": [
+      "internal/handlers/auth.go",
+      "internal/handlers/entries.go",
+      "internal/handlers/exercise.go",
+      "internal/handlers/profile.go"
+    ],
+    "middleware": [
+      "internal/middleware/auth.go"
+    ],
+    "models": [
+      "internal/models/exercise.go",
+      "internal/models/portfolio_snapshot.go",
+      "internal/models/user.go",
+      "internal/models/user_profile.go",
+      "internal/models/workout_entry.go"
+    ],
+    "scripts": [
+      "scripts/migrate.go",
+      "scripts/seed.go"
+    ],
+    "server": [
+      "cmd/server/main.go"
+    ],
+    "services": [
+      "internal/services/score_service.go",
+      "internal/services/scoring_engine.go"
+    ],
+    "utils": [
+      "internal/utils/jwt.go"
+    ],
+    "web": [
+      "web/src/components/WorkoutEntryForm.tsx",
+      "web/src/pages/WorkoutEntryPage.tsx",
+      "web/src/services/api.ts"
+    ]
+  }
+}
