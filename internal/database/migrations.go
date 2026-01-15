@@ -6,18 +6,21 @@ import (
 )
 
 func RunMigrations() {
-	if DB == nil {
-		log.Println("Database not initialized, skipping migrations")
-		return
-	}
+	log.Println("Running database migrations...")
 
 	err := DB.AutoMigrate(
 		&models.User{},
 		&models.UserProfile{},
 		&models.BodyweightEntry{},
 		&models.ExercisePR{},
+		&models.Exercise{},
+		&models.WorkoutEntry{},
+		&models.PRHistory{},
 	)
+
 	if err != nil {
-		log.Printf("Migration error: %v", err)
+		log.Fatalf("Failed to run migrations: %v", err)
 	}
+
+	log.Println("Migrations completed successfully")
 }

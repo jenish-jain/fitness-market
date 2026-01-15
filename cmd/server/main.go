@@ -63,7 +63,7 @@ func main() {
 		api.POST("/profile/bodyweight", handlers.AddBodyweight)
 		api.GET("/profile/bodyweight", handlers.GetBodyweightHistory)
 
-		// Exercise PR routes
+		// Exercise PR routes (legacy)
 		api.POST("/profile/exercise-prs", handlers.AddExercisePR)
 		api.GET("/profile/exercise-prs", handlers.GetExercisePRs)
 		api.PUT("/profile/exercise-prs/:id", handlers.UpdateExercisePR)
@@ -77,6 +77,10 @@ func main() {
 
 		// Workout entry routes
 		api.POST("/entries", handlers.CreateEntry)
+
+		// PR History routes
+		api.GET("/prs", handlers.GetAllUserPRs)
+		api.GET("/prs/exercise/:exercise_id", handlers.GetPRHistoryByExercise)
 	}
 
 	// Start server

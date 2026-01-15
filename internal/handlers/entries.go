@@ -21,17 +21,20 @@ type CreateEntryRequest struct {
 }
 
 type EntryResponse struct {
-	ID         uint      `json:"id"`
-	UserID     uint      `json:"user_id"`
-	ExerciseID uint      `json:"exercise_id"`
-	Weight     float64   `json:"weight"`
-	Reps       int       `json:"reps"`
-	Sets       int       `json:"sets"`
-	Notes      string    `json:"notes"`
-	Date       time.Time `json:"date"`
-	Score      float64   `json:"score"`
-	IsPR       bool      `json:"is_pr"`
-	CreatedAt  time.Time `json:"created_at"`
+	ID              uint      `json:"id"`
+	UserID          uint      `json:"user_id"`
+	ExerciseID      uint      `json:"exercise_id"`
+	Weight          float64   `json:"weight"`
+	Reps            int       `json:"reps"`
+	Sets            int       `json:"sets"`
+	Notes           string    `json:"notes"`
+	Date            time.Time `json:"date"`
+	Score           float64   `json:"score"`
+	IsPR            bool      `json:"is_pr"`
+	CelebrationText string    `json:"celebration_text,omitempty"`
+	PreviousBest    float64   `json:"previous_best,omitempty"`
+	Improvement     float64   `json:"improvement,omitempty"`
+	CreatedAt       time.Time `json:"created_at"`
 }
 
 // CreateEntry handles POST /api/v1/entries
@@ -48,10 +51,12 @@ func CreateEntry(c *gin.Context) {
 		return
 	}
 
-	// Validate exercise exists
+	db := database.GetDB()
+
+	// Verify exercise exists and belongs to user
 	var exercise models.Exercise
-	if err := database.DB.First(&exercise, req.ExerciseID).Error; err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Exercise not found"})
+	if err := db.Where("id = ? AND user_id = ?", req.ExerciseID, userID).First(&exercise).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Exercise not found"})
 		return
 	}
 
@@ -59,54 +64,62 @@ func CreateEntry(c *gin.Context) {
 	entryDate := time.Now()
 	if req.Date != "" {
 		parsedDate, err := time.Parse("2006-01-02", req.Date)
-		if err == nil {
-			entryDate = parsedDate
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid date format. Use YYYY-MM-DD"})
+			return
 		}
+		entryDate = parsedDate
 	}
 
-	uid := userID.(uint)
-
-	// Calculate score using scoring engine
-	score := services.CalculateEntryScore(req.Weight, req.Reps, req.Sets, uid)
-
 	// Detect if this is a PR
-	isPR := services.DetectPR(uid, req.ExerciseID, req.Weight, req.Reps)
+	prResult, err := services.DetectPR(userID.(uint), req.ExerciseID, req.Weight, req.Reps, req.Sets)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to check PR status"})
+		return
+	}
 
 	// Create the workout entry
 	entry := models.WorkoutEntry{
-		UserID:     uid,
+		UserID:     userID.(uint),
 		ExerciseID: req.ExerciseID,
-		Date:       entryDate,
-		Sets:       req.Sets,
-		Reps:       req.Reps,
 		Weight:     req.Weight,
+		Reps:       req.Reps,
+		Sets:       req.Sets,
 		Notes:      req.Notes,
-		Score:      score,
-		IsPR:       isPR,
+		Date:       entryDate,
+		Score:      prResult.Score,
+		IsPR:       prResult.IsPR,
 	}
 
-	if err := database.DB.Create(&entry).Error; err != nil {
+	if err := db.Create(&entry).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create entry"})
 		return
 	}
 
-	// Update PR record if this is a new PR
-	if isPR {
-		services.UpdatePRIfNeeded(uid, req.ExerciseID, req.Weight, req.Reps, entryDate)
+	// If it's a PR, record it in PR history
+	if prResult.IsPR {
+		if err := services.RecordPR(userID.(uint), req.ExerciseID, entry.ID, req.Weight, req.Reps, req.Sets, entryDate); err != nil {
+			// Log error but don't fail the request
+			// The entry was created successfully
+		}
 	}
 
+	// Build response with celebration indicator
 	response := EntryResponse{
-		ID:         entry.ID,
-		UserID:     entry.UserID,
-		ExerciseID: entry.ExerciseID,
-		Weight:     entry.Weight,
-		Reps:       entry.Reps,
-		Sets:       entry.Sets,
-		Notes:      entry.Notes,
-		Date:       entry.Date,
-		Score:      entry.Score,
-		IsPR:       entry.IsPR,
-		CreatedAt:  entry.CreatedAt,
+		ID:              entry.ID,
+		UserID:          entry.UserID,
+		ExerciseID:      entry.ExerciseID,
+		Weight:          entry.Weight,
+		Reps:            entry.Reps,
+		Sets:            entry.Sets,
+		Notes:           entry.Notes,
+		Date:            entry.Date,
+		Score:           entry.Score,
+		IsPR:            entry.IsPR,
+		CelebrationText: prResult.CelebrationText,
+		PreviousBest:    prResult.PreviousBest,
+		Improvement:     prResult.Improvement,
+		CreatedAt:       entry.CreatedAt,
 	}
 
 	c.JSON(http.StatusCreated, response)
